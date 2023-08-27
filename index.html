@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Game</title>
+</head>
+<body>
+    <h1>Rock Paper Scissors Game</h1>
+    <button id="connectWalletBtn">Please Connect Wallet</button>
+    <p id="walletConnected" style="display: none;">Wallet Connected</p>
+
+    <div style="margin-top: 30px;">
+        <button id="createBtn">To Create Game</button>
+        <button id="joinBtn">To Join Game</button>
+    </div>
+    
+    <div id="createGameSection" style="display: none;">
+        <h2>Create Game</h2>
+        <label for="commitment">Enter Commitment:</label> 
+        <input type="text" id="commitment" placeholder="Enter Commitment"> <br>
+        <label for="stakeCreate">Enter Stake Amount in Ether:</label>
+        <input type="number" id="stakeCreate" placeholder="Enter Stake Amount in Ether"> <br>
+        <button id="createGameBtn">Create Game</button>
+    </div>
+    
+    <div id="joinGameSection" style="display: none;">
+        <h2>Join Game</h2>
+        <label for="joinGameId">Enter Game ID:</label>
+        <input type="number" id="joinGameId" placeholder="Enter Game ID">
+        <button id="joinGameBtn">Join Game</button>
+    </div>
+    
+    <script>
+        const createBtn = document.getElementById("createBtn");
+        const joinBtn = document.getElementById("joinBtn");
+        const createGameSection = document.getElementById("createGameSection");
+        const joinGameSection = document.getElementById("joinGameSection");
+    
+        createBtn.addEventListener("click", () => {
+            createGameSection.style.display = "block";
+            joinGameSection.style.display = "none";
+        });
+    
+        joinBtn.addEventListener("click", () => {
+            createGameSection.style.display = "none";
+            joinGameSection.style.display = "block";
+        });
+    </script>
+    <div id="playGameSection" style="display: none;">
+        <h2>Play Game</h2>
+        <!-- <input type="number" id="playerMove" placeholder="Enter Your Move (0: Rock, 1: Paper, 2: Scissors)">
+         -->
+        <select type="number" id="playerMove">
+            <option value="0">None</option>
+            <option value="1">Rock</option>
+            <option value="2">Paper</option>
+            <option value="3">Scissors</option>
+           
+        </select>
+        <button id="revealMoveBtn">Reveal Move</button>
+        <p id="gameStatus"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.0/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ws@7.5.4"></script>
+</body>
+</html>
