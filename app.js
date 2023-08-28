@@ -343,7 +343,7 @@ async function revealMove() {
                     // Determine the winner and update the game status
                     const moves = [game.move1, game.move2]; // Moves revealed by both players
                     const moveNames = ["Null", "Rock", "Paper", "Scissors", "Lizard", "Spock"]; // Corresponding move names
-                    
+                
                     if (moves[0]== 0 &&  moves[1]== 0) {
                        
                             resultMessage = "Both players chose Null.";
@@ -357,19 +357,43 @@ async function revealMove() {
                 else if (moves[1]== 0 ) {
                        
                     resultMessage = "player2 chose Null";
-                
-            } else {
-                        // No player chose "Null", determine the winner based on moves
-                        const winnerIndex = (moves[0] - moves[1] + 5) % 5;
-                        
-                        if (winnerIndex === 0) {
-                            resultMessage = "It's a tie!";
-                        } else if (winnerIndex === 1 || winnerIndex === 4) {
-                            resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
-                        } else {
-                            resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
-                        }
+                }
+                else if (moves[0]== moves[1]){
+                    resultMessage = "It's a tie!"
+                }
+             
+                 else  if (
+                        (moves[0] == 1 && (moves[1] == 3 || moves[1] == 4)) ||
+                        (moves[0] == 2 && (moves[1] == 1 || moves[1] == 5)) ||
+                        (moves[0] == 3 && (moves[1] == 2 || moves[1] == 4)) ||
+                        (moves[0] == 4 && (moves[1] == 2 || moves[1] == 5)) ||
+                        (moves[0] == 5 && (moves[1] == 1 || moves[1] == 3))
+                    ) {
+                        resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
+                    } else {
+                        resultMessage = `Player 1 (joined player) wins with ${moveNames[moves[1]]}.`;
                     }
+              
+                
+            // } else {
+            //             // No player chose "Null", determine the winner based on moves
+            //             const winnerIndex = (moves[0] - moves[1] + 5) % 5;
+
+            //             if(moves[0]== 1 && (moves[1]== 3 || moves[1]== 4)){
+
+            //             }
+            //             else if (moves[0]== 1 && (moves[0]== 3 || moves[0]== 4)){
+
+            //             }
+                        
+            //             if (winnerIndex === 0) {
+            //                 resultMessage = "It's a tie!";
+            //             } else if (winnerIndex == 1 || winnerIndex === 4) {
+            //                 resultMessage = `Player 2 (created player) wins with ${moveNames[moves[0]]}.`;
+            //             } else {
+            //                 resultMessage = `Player 1 (joined player) wins with ${moveNames[moves[1]]}.`;
+            //             }
+                 //   }
                     
                     document.getElementById("gameStatus").innerText = resultMessage;
                 } else {
@@ -409,6 +433,10 @@ async function fetchGameResult() {
             const player2AddressElement = document.getElementById("player2Address");
             const player1StakeElement = document.getElementById("player1Stake");
             const player2StakeElement = document.getElementById("player2Stake");
+
+            const moves = [game.move1, game.move2];
+            const moveNames = ["Null", "Rock", "Paper", "Scissors", "Lizard", "Spock"];
+            
             
             if (game.move1 == 0 && game.move2 == 0) {
               
@@ -432,26 +460,36 @@ async function fetchGameResult() {
                 player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
                 player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
                
-            } else {
-                const moves = [game.move1, game.move2];
-                const moveNames = ["Null", "Rock", "Paper", "Scissors", "Lizard", "Spock"];
-                const winnerIndex = (moves[0] - moves[1] + 5) % 5;
-
-                let resultMessage;
-                if (winnerIndex === 0) {
-                    resultMessage = "It's a tie!";
-                } else if (winnerIndex === 1 || winnerIndex === 4) {
-                    resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
-                } else {
-                    resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
-                }
-                
-                resultElement.textContent = resultMessage;
-                player1AddressElement.textContent = `Player 1 (created) Address: ${game.player1}`;
-                player2AddressElement.textContent = `Player 2 (joinned) Address: ${game.player2}`;
+            }
+            else if (game.move1== game.move2){
+                resultElement.textContent = " It's a tie!";
+                player1AddressElement.textContent = `Player 1 Address: ${game.player1}`;
+                player2AddressElement.textContent = `Player 2 Address: ${game.player2}`;
                 player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
                 player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+               
             }
+            
+
+            else if( 
+             (moves[0] == 1 && (moves[1] == 3 || moves[1] == 4)) ||
+            (moves[0] == 2 && (moves[1] == 1 || moves[1] == 5)) ||
+            (moves[0] == 3 && (moves[1] == 2 || moves[1] == 4)) ||
+            (moves[0] == 4 && (moves[1] == 2 || moves[1] == 5)) ||
+            (moves[0] == 5 && (moves[1] == 1 || moves[1] == 3)))
+            {
+                resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
+            }
+            else {
+                resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
+            }
+            
+            resultElement.textContent = resultMessage;
+            player1AddressElement.textContent = `Player 1 (created) Address: ${game.player1}`;
+            player2AddressElement.textContent = `Player 2 (joinned) Address: ${game.player2}`;
+            player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+            player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+    
         } else {
             const resultElement = document.getElementById("gameResultStatus");
             resultElement.textContent = "Game result not available yet.";
