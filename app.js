@@ -10,11 +10,13 @@ const web3 = new Web3(Web3.givenProvider);
 let rpsContract;
 let currentPlayerAddress;
 let currentGameId;
-let currentStake; // Remove the initialization here
-let decodedData;
+let currentStake ; // Remove the initialization here
+let IsconnectWallet  = false;
+
 
 async function connectWallet() {
-    console.log('helloworlddgg22kk');
+    IsconnectWallet=true;
+    console.log(IsconnectWallet);
     if (window.ethereum) {
         try {
             
@@ -252,8 +254,13 @@ async function connectWallet() {
 
 async function createGame() {
     
+    
     console.log('recaeojieegggiiko');
     try {
+        if (IsconnectWallet == false) {
+            alert("Please connect your wallet with MetaMask to use this feature.");
+            return;
+        }
         const accounts = await web3.eth.getAccounts();
         
         // Retrieve the commitment and stake amount from the input fields
@@ -287,6 +294,10 @@ async function createGame() {
 
 async function joinGame() {
     try {
+        if (IsconnectWallet == false) {
+            alert("Please connect your wallet with MetaMask to use this feature.");
+            return;
+        }
         const gameId = document.getElementById("joinGameId").value;
         const accounts = await web3.eth.getAccounts();
         const player1Game = await rpsContract.methods.games(gameId).call({ from: accounts[0] });
