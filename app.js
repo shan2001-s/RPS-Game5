@@ -1,7 +1,9 @@
+document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
 document.getElementById("createGameBtn").addEventListener("click", createGame);
 document.getElementById("joinGameBtn").addEventListener("click", joinGame);
 document.getElementById("revealMoveBtn").addEventListener("click", revealMove);
+  document.getElementById("fetchResultBtn").addEventListener("click", fetchGameResult);
 
 // Connect to Ethereum network using web3.js
 const web3 = new Web3(Web3.givenProvider);
@@ -19,21 +21,8 @@ async function connectWallet() {
             await window.ethereum.enable();
             console.log("Wallet connecteddddeessssssss:", web3.eth.defaultAccount);
 
-            const contractAddress = "0xd20a3a661936560f2e59c9606a1a8e8e646dd03a"; // Replace with your contract address
-            const contractAbi = [
-                {
-                    "inputs": [
-                        {
-                            "internalType": "bytes32",
-                            "name": "commitment",
-                            "type": "bytes32"
-                        }
-                    ],
-                    "name": "createGame",
-                    "outputs": [],
-                    "stateMutability": "payable",
-                    "type": "function"
-                },
+            const contractAddress = "0x21E2DCf45e885D52a93c3a4f2EA2A8ac496b71Cf"; // contract address
+            const contractAbi =[
                 {
                     "anonymous": false,
                     "inputs": [
@@ -104,19 +93,6 @@ async function connectWallet() {
                     "type": "event"
                 },
                 {
-                    "inputs": [
-                        {
-                            "internalType": "uint256",
-                            "name": "gameId",
-                            "type": "uint256"
-                        }
-                    ],
-                    "name": "joinGame",
-                    "outputs": [],
-                    "stateMutability": "payable",
-                    "type": "function"
-                },
-                {
                     "anonymous": false,
                     "inputs": [
                         {
@@ -144,19 +120,14 @@ async function connectWallet() {
                 {
                     "inputs": [
                         {
-                            "internalType": "uint256",
-                            "name": "gameId",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "enum RockPaperScissors.Move",
-                            "name": "move",
-                            "type": "uint8"
+                            "internalType": "bytes32",
+                            "name": "commitment",
+                            "type": "bytes32"
                         }
                     ],
-                    "name": "revealMove",
+                    "name": "createGame",
                     "outputs": [],
-                    "stateMutability": "nonpayable",
+                    "stateMutability": "payable",
                     "type": "function"
                 },
                 {
@@ -235,8 +206,39 @@ async function connectWallet() {
                     ],
                     "stateMutability": "view",
                     "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "gameId",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "joinGame",
+                    "outputs": [],
+                    "stateMutability": "payable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "gameId",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "enum RockPaperScissors.Move",
+                            "name": "move",
+                            "type": "uint8"
+                        }
+                    ],
+                    "name": "revealMove",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
                 }
-            ]; // Replace with your contract ABI
+            ]//   contract ABI
             rpsContract = new web3.eth.Contract(contractAbi, contractAddress);
             document.getElementById("walletConnected").style.display = "block";
             document.getElementById("connectWalletBtn").style.display = "none";
@@ -275,6 +277,8 @@ async function createGame() {
 
   
         document.getElementById("playGameSection").style.display = "block";
+        document.getElementById("GameID_").innerText = `GameID : ${currentGameId}`;
+        
         document.getElementById("gameStatus").innerText = `Game created by Player 1 (${currentPlayerAddress}). please ask to join player2 GameID: ${currentGameId} before play`;
     } catch (error) {
         console.error("Error creating game:", error);
@@ -327,26 +331,41 @@ async function revealMove() {
                 if (game.revealed1 && game.revealed2) {
                     // Determine the winner and update the game status
                     const moves = [game.move1, game.move2]; // Moves revealed by both players
-                    const moveNames = ["Null","Rock", "Paper", "Scissors"]; // Corresponding move names
+                    const moveNames = ["Null", "Rock", "Paper", "Scissors", "Lizard", "Spock"]; // Corresponding move names
                     
-                    // Determine the winner index based on the moves
-                    const winnerIndex = (moves[0] - moves[1] + 3) % 3;
-            
-                   
-                    if (winnerIndex === 0) {
-                        resultMessage = "It's a tie!";
-                    } else if (winnerIndex === 1) {
-                        resultMessage = `Player 1(created player) wins with ${moveNames[moves[0]]}.`;
-                    } else {
-                        resultMessage = `Player 2(joinned player) wins with ${moveNames[moves[1]]}.`;
+                    if (moves[0]== 0 &&  moves[1]== 0) {
+                       
+                            resultMessage = "Both players chose Null.";
+                        
+                    } 
+                    else if (moves[0]== 0 ) {
+                       
+                        resultMessage = "player1 chose Null";
+                    
+                } 
+                else if (moves[1]== 0 ) {
+                       
+                    resultMessage = "player2 chose Null";
+                
+            } else {
+                        // No player chose "Null", determine the winner based on moves
+                        const winnerIndex = (moves[0] - moves[1] + 5) % 5;
+                        
+                        if (winnerIndex === 0) {
+                            resultMessage = "It's a tie!";
+                        } else if (winnerIndex === 1 || winnerIndex === 4) {
+                            resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
+                        } else {
+                            resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
+                        }
                     }
-            
+                    
                     document.getElementById("gameStatus").innerText = resultMessage;
                 } else {
                     // Only one player has revealed their move, show a message indicating the waiting status
                     document.getElementById("gameStatus").innerText = "Waiting for the other player to reveal their move...";
                 }
-                document.getElementById("gameStatus").innerText = resultMessage;
+                
             })
             .on("error", (error) => {
                 console.error("Error listening to MoveRevealed event:", error);
@@ -357,3 +376,91 @@ async function revealMove() {
 }
 
 
+
+async function fetchGameResult() {
+     // Check if the user is connected to a wallet
+         if (typeof ethereum === "undefined" || !ethereum.isMetaMask || !ethereum.isConnected()) {
+            alert("Please connect your wallet with MetaMask to use this feature.");
+            return;
+        }
+    try {
+        
+        const gameIdResult = parseInt(document.getElementById("gameIdResult").value);
+        console.log(gameIdResult);
+
+        // Fetch the game result using the game ID
+        const game = await rpsContract.methods.games(gameIdResult).call();
+        console.log(game);
+        console.log(game);
+        if (game.finished) {
+            const resultElement = document.getElementById("gameResultStatus");
+            const player1AddressElement = document.getElementById("player1Address");
+            const player2AddressElement = document.getElementById("player2Address");
+            const player1StakeElement = document.getElementById("player1Stake");
+            const player2StakeElement = document.getElementById("player2Stake");
+            
+            if (game.move1 == 0 && game.move2 == 0) {
+              
+                resultElement.textContent = "Both Player chose Null";
+               
+            }
+            else if (game.move1 == 0 ) {
+              
+                resultElement.textContent = " Player1 chose Null";
+                player1AddressElement.textContent = `Player 1 Address: ${game.player1}`;
+                player2AddressElement.textContent = `Player 2 Address: ${game.player2}`;
+                player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+                player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+               
+            }
+            else if (game.move2 == 0 ) {
+              
+                resultElement.textContent = " Player2 chose Null";
+                player1AddressElement.textContent = `Player 1 Address: ${game.player1}`;
+                player2AddressElement.textContent = `Player 2 Address: ${game.player2}`;
+                player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+                player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+               
+            } else {
+                const moves = [game.move1, game.move2];
+                const moveNames = ["Null", "Rock", "Paper", "Scissors", "Lizard", "Spock"];
+                const winnerIndex = (moves[0] - moves[1] + 5) % 5;
+
+                let resultMessage;
+                if (winnerIndex === 0) {
+                    resultMessage = "It's a tie!";
+                } else if (winnerIndex === 1 || winnerIndex === 4) {
+                    resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
+                } else {
+                    resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
+                }
+                
+                resultElement.textContent = resultMessage;
+                player1AddressElement.textContent = `Player 1 (created) Address: ${game.player1}`;
+                player2AddressElement.textContent = `Player 2 (joinned) Address: ${game.player2}`;
+                player1StakeElement.textContent = `Player 1 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+                player2StakeElement.textContent = `Player 2 Stake: ${web3.utils.fromWei(game.stake, "ether")} ETH`;
+            }
+        } else {
+            const resultElement = document.getElementById("gameResultStatus");
+            resultElement.textContent = "Game result not available yet.";
+                // Hide player information elements
+                const player1AddressElement = document.getElementById("player1Address");
+                const player2AddressElement = document.getElementById("player2Address");
+                const player1StakeElement = document.getElementById("player1Stake");
+                const player2StakeElement = document.getElementById("player2Stake");
+    
+                player1AddressElement.style.display = "none";
+                player2AddressElement.style.display = "none";
+                player1StakeElement.style.display = "none";
+                player2StakeElement.style.display = "none";
+             }
+    } catch (error) {
+        console.error("Error fetching game result:", error);
+        alert("Please connect your wallet with MetaMask to use this feature.");
+        return;
+    }
+}
+
+
+});

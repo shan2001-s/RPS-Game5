@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors Game</title>
+    <title>Rock Paper Scissors Lizard Spock Game</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
 </head>
 <body>
-    <h1>Rock Paper Scissors Game</h1>
-    <button id="connectWalletBtn">Please Connect Wallet</button>
+    <h1>Rock Paper Scissors Lizard Spock Game</h1>
+    <button type="button" class="btn btn-danger" id="connectWalletBtn"> Connect Wallet first</button>
     <p id="walletConnected" style="display: none;">Wallet Connected</p>
 
     <div style="margin-top: 30px;">
-        <button id="createBtn">To Create Game</button>
-        <button id="joinBtn">To Join Game</button>
+        <button type="button" class="btn btn-dark" id="createBtn">To Create Game</button>
+        <button type="button" class="btn btn-dark" id="joinBtn">To Join Game</button>
+        <button type="button" class="btn btn-success" id="resultBtn">To see Game result(winner)  </button>
     </div>
     
     <div id="createGameSection" style="display: none;">
@@ -21,21 +25,39 @@
         <input type="text" id="commitment" placeholder="Enter Commitment"> <br>
         <label for="stakeCreate">Enter Stake Amount in Ether:</label>
         <input type="number" id="stakeCreate" placeholder="Enter Stake Amount in Ether"> <br>
-        <button id="createGameBtn">Create Game</button>
+        <button type="button" class="btn btn-primary" id="createGameBtn">Create Game</button>
     </div>
     
     <div id="joinGameSection" style="display: none;">
         <h2>Join Game</h2>
         <label for="joinGameId">Enter Game ID:</label>
         <input type="number" id="joinGameId" placeholder="Enter Game ID">
-        <button id="joinGameBtn">Join Game</button>
+        <button type="button" class="btn btn-primary" id="joinGameBtn">Join Game</button>
+    </div>
+
+    <div id="fetchGameResult" style="display: none; margin-top: 100px;">
+       <div>
+            <label for="gameIdResult">Enter Game ID to fetch result:</label>
+            <input type="number" id="gameIdResult" placeholder="Enter Game ID">
+            <button type="button" class="btn btn-primary" id="fetchResultBtn">Fetch Result</button>
+        </div>
+    
+        <div id="resultSection">
+            <p id="gameResultStatus">Game result will be displayed here.</p>
+            <p id="player1Address"></p>
+            <p id="player2Address"></p>
+            <p id="player1Stake"></p>
+            <p id="player2Stake"></p>
+        </div>
     </div>
     
     <script>
         const createBtn = document.getElementById("createBtn");
         const joinBtn = document.getElementById("joinBtn");
+        const resultBtn = document.getElementById("resultBtn");
         const createGameSection = document.getElementById("createGameSection");
         const joinGameSection = document.getElementById("joinGameSection");
+        const fetchGameResult = document.getElementById("fetchGameResult");
     
         createBtn.addEventListener("click", () => {
             createGameSection.style.display = "block";
@@ -45,6 +67,10 @@
         joinBtn.addEventListener("click", () => {
             createGameSection.style.display = "none";
             joinGameSection.style.display = "block";
+        });
+
+        resultBtn.addEventListener("click", () => {
+            fetchGameResult.style.display = "block";
         });
     </script>
     <div id="playGameSection" style="display: none;">
@@ -56,14 +82,24 @@
             <option value="1">Rock</option>
             <option value="2">Paper</option>
             <option value="3">Scissors</option>
+            <option value="4"> Lizard </option>
+            <option value="5">Spock</option>
            
         </select>
         <button id="revealMoveBtn">Reveal Move</button>
+        <h3 id="GameID_"></h3>
         <p id="gameStatus"></p>
     </div>
+
+ 
+
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.0/dist/web3.min.js"></script>
     <script src="app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ws@7.5.4"></script>
+<!-- Add this at the end of the <body> tag -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
 </html>
