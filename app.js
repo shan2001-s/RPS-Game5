@@ -371,7 +371,7 @@ async function revealMove() {
                     ) {
                         resultMessage = `Player 1 (created player) wins with ${moveNames[moves[0]]}.`;
                     } else {
-                        resultMessage = `Player 1 (joined player) wins with ${moveNames[moves[1]]}.`;
+                        resultMessage = `Player 2 (joined player) wins with ${moveNames[moves[1]]}.`;
                     }
               
                 
